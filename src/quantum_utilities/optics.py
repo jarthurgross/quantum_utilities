@@ -16,7 +16,7 @@ def make_a(N):
         number basis
 
     '''
-    return np.diag(np.sqrt(np.arange(1, N)), 1, dtype=np.complex)
+    return np.diag(np.sqrt(np.arange(1, N, dtype=np.complex)), 1)
 
 def get_displace_op_matrix_element(m, n, alpha):
     r'''Get matrix elements from a displacement operator.
