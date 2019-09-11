@@ -2,6 +2,7 @@ from setuptools import setup
 
 requires = [
         'numpy >= 1.13',
+        'seaborn',
          ]
 
 setup(name='quantum_utilities',
