@@ -163,3 +163,30 @@ def test_proc_mat():
                                                     unit_basis_2)
     check_proc_lr_action(proc_mat_2, lr_tensor_2_unit, op_vecs_2,
                          unit_basis_2)
+
+def test_proc_tens():
+    # Run tests to see if the process tensor is working.
+
+    # Construct Pauli basis for qubits.
+    basis = [Id, sigx, sigy, sigz]
+    RS = np.random.RandomState()
+
+    RS.seed(1910101745)
+    random_tensor = RS.randn(4, 4)
+    RS.seed(1910101746)
+    random_state = RS.randn(2, 2)
+    def random_LR_process(state):
+        return supops.left_right_action(random_tensor, basis, state)
+
+    def random_middle_process(state):
+        return supops.middle_action(random_tensor, basis, state)
+    LR_process_tensor = supops.get_process_tensor_from_process(
+            random_LR_process, 2)
+    middle_process_tensor = supops.get_process_tensor_from_process(
+            random_middle_process, 2)
+    assert_op_almost_equal(supops.act_process_tensor(LR_process_tensor,
+                                                     random_state),
+                           random_LR_process(random_state))
+    assert_op_almost_equal(supops.act_process_tensor(middle_process_tensor,
+                                                     random_state),
+                           random_middle_process(random_state))

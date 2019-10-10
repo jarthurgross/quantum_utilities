@@ -170,6 +170,62 @@ def left_right_action(tensor, basis, argument):
                            argument)
     return output
 
+def get_process_tensor_from_process(process, dim):
+    '''Calculate the process tensor given a process.
+
+    The process tensor for a process E in a vector basis {|n>} has the following
+    components:
+    T_jkmn = <m| E(|j><k|) |n>
+
+    Parameters
+    ----------
+    process: callable
+        The process as a function that takes a density matrix and returns the
+        resulting density matrix.
+    dim: int
+        Dimension of the Hilbert space on which the density operators act
+
+    Returns
+    -------
+    numpy.array
+        The process tensor
+
+    '''
+    kets = [np.array([1 if j==k else 0 for k in range(dim)])
+            for j in range(dim)]
+    rho0_jks = [[np.outer(ket1, ket2.conj()) for ket2 in kets]
+                for ket1 in kets]
+    rho_jks = [[process(rho0) for rho0 in rho0_ks] for rho0_ks in rho0_jks]
+    return np.array(rho_jks)
+
+def act_process_tensor(tensor, state):
+    '''Calculate the action of a process tensor on a state.
+
+    The process tensor for a process E in a vector basis {|n>} has the following
+    components:
+    T_jkmn = <m| E(|j><k|) |n>
+    For a state rho = rho_jk |j><k| the action of the process is calculated as
+    below:
+    E(rho) = T_kjmn rho_jk |m><n|
+    so the new density matric elements are given by this particular contraction
+    of T with the original density matrix elements.
+
+    Parameters
+    ----------
+    tensor: np.array
+        The process tensor
+    state: np.array
+        The density matrix
+
+    Returns
+    -------
+    numpy.array
+        The new density matrix to which the process maps the original density
+        matrix
+
+    '''
+    return np.einsum('kjmn,kj->mn', tensor, state)
+
 def sharp_tensor(A, basis):
     '''Perform the sharp on the tensor with respect to an operator basis.
 
