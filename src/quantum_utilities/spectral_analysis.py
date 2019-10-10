@@ -17,7 +17,7 @@ def get_spectra_and_bases(ops):
 def get_spectra_and_bases_sparse(sparse_ops, eigsh_kwargs=None):
     default_eigsh_kwargs = {'k': 6,
                             'which': 'LA',
-                            'return_eigvectors': True}
+                            'return_eigenvectors': True}
     eigsh_kwargs = _process_default_kwargs(eigsh_kwargs, default_eigsh_kwargs)
     spectra, bases = zip(*[splinalg.eigsh(op, **eigsh_kwargs)
                            for op in sparse_ops])
