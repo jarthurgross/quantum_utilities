@@ -226,6 +226,30 @@ def act_process_tensor(tensor, state):
     '''
     return np.einsum('kjmn,kj->mn', tensor, state)
 
+def get_process_state_from_tensor(process_tensor):
+    '''Get the Choi state of the process from the process tensor.
+
+    The Choi state is a partial transpose of the image of half of a maximally
+    entangled state under the process. This is easily obtained from the process
+    tensor: chi_(mk,nj) = (1 / d_in) T_jkmn
+
+    Parameters
+    ----------
+    process_tensor: np.array
+        The process tensor
+
+    Returns
+    -------
+    numpy.array
+        The Choi state
+
+    '''
+    s = process_tensor.shape
+    dim_in = s[0]
+    return (1/dim_in)*np.transpose(process_tensor,
+                                   (2, 0, 3, 1)).reshape((s[2]*s[0],
+                                                          s[3]*s[1]))
+
 def sharp_tensor(A, basis):
     '''Perform the sharp on the tensor with respect to an operator basis.
 
