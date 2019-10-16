@@ -250,12 +250,14 @@ def get_process_state_from_tensor(process_tensor):
                                    (2, 0, 3, 1)).reshape((s[2]*s[0],
                                                           s[3]*s[1]))
 
-def sharp_tensor(A, basis):
+def sharp_tensor(A, basis=None, B=None, Binv=None):
     '''Perform the sharp on the tensor with respect to an operator basis.
 
     The sharp is an involution that swaps the middle and left-right actions of a
     tensor.  The is, the left-right action of A is equal to the middle action of
     A#, and vice versa.
+
+    If `B` and `Binv` are not both supplied, `basis` must be supplied.
 
     Parameters
     ----------
@@ -263,6 +265,10 @@ def sharp_tensor(A, basis):
         The tensor to sharp
     basis: list(numpy.array)
         Basis of operators expressed as matrices
+    B: numpy.array
+        Change-of-basis operator for superoperators returned by `get_supdup_op`
+    Binv: numpy.array
+        Inverse of the change-of-basis operator
 
     Returns
     -------
@@ -287,10 +293,12 @@ def sharp_tensor(A, basis):
     # E#_mn_pq = B_mnpq_jk*E#_jk
     # E#_jk = B.inv()_jk_mnpq*E#_mn_pq
     #       = B.inv()_jk_mnpq*B_mqpn_rs*E_rs
-    op_dim = len(basis)
-    vec_dim = basis[0].shape[0]
-    assert vec_dim**2 == op_dim
-    B = get_supdup_op(basis)
-    Binv = np.linalg.inv(B.reshape(op_dim**2, op_dim**2)).reshape(
-            *it.repeat(op_dim, 2), *it.repeat(vec_dim, 4))
+    if B is None:
+        B = get_supdup_op(basis)
+    if Binv is None:
+        op_dim = len(basis)
+        vec_dim = basis[0].shape[0]
+        assert vec_dim**2 == op_dim
+        Binv = np.linalg.inv(B.reshape(op_dim**2, op_dim**2)).reshape(
+                *it.repeat(op_dim, 2), *it.repeat(vec_dim, 4))
     return np.einsum('jkmnpq,mqpnrs,rs->jk', Binv, B, A)
