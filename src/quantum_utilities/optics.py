@@ -73,6 +73,25 @@ def make_displacement_op(alpha, N):
             op[j,k] = get_displace_op_matrix_element(j, k, alpha)
     return op
 
+def make_vac_state_vec(N):
+    r'''Make a truncated vacuum-state vector.
+
+    Parameters
+    ----------
+    N: positive integer
+        The dimension of the truncated Hilbert space, basis {0, ..., N-1}
+
+    Returns
+    -------
+    numpy.array
+        Vacuum-state vector in the truncated Hilbert space, represented in the
+        number basis
+
+    '''
+    ket = np.zeros(N, dtype=np.complex)
+    ket[0] = 1
+    return ket
+
 def make_coh_state_vec(alpha, N, normalized=True):
     r'''Make a truncated coherent-state vector.
 
@@ -98,3 +117,33 @@ def make_coh_state_vec(alpha, N, normalized=True):
     ns = np.arange(0, N, dtype=np.complex)
     coh_vec = np.power(alpha, ns) / np.sqrt(factorial(ns))
     return coh_vec / np.linalg.norm(coh_vec) if normalized else coh_vec
+
+def make_squeezed_state_vec(r, phi, N, normalized=True):
+    r'''Make a truncated squeezed-state vector.
+
+    The squeezed-state vector is :math:`S(r,\phi)|0\rangle`. The truncated
+    vector is renormalized by default.
+
+    Parameters
+    ----------
+    N: positive integer
+        The dimension of the truncated Hilbert space, basis {0, ..., N-1}
+    r: real number
+        Squeezing amplitude
+    phi: real number
+        Squeezing phase
+    normalized: boolean
+        Whether or not the truncated vector is renormalized
+
+    Returns
+    -------
+    numpy.array
+        Squeezed-state vector in the truncated Hilbert space, represented in the
+        number basis
+
+    '''
+    ket = np.zeros(N, dtype=np.complex)
+    for n in range(N//2):
+        ket[2*n] = (1 / np.sqrt(np.cosh(r))) * ((-0.5 * np.exp(2.j * mu) * np.tanh(r))**n /
+                                                factorial(n)) * np.sqrt(factorial(2 * n))
+    return ket / np.linalg.norm(ket) if normalized else ket
