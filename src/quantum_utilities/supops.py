@@ -171,11 +171,14 @@ def left_right_action(tensor, basis, argument):
     return output
 
 def get_process_tensor_from_process(process, dim):
-    '''Calculate the process tensor given a process.
+    r'''Calculate the process tensor given a process.
 
-    The process tensor for a process E in a vector basis {|n>} has the following
-    components:
-    T_jkmn = <m| E(|j><k|) |n>
+    The process tensor for a process E in a vector basis :math:`\{|n\rangle\}`
+    has the following components:
+
+    .. math::
+
+       T_{jkmn} = \langle m| E(|j\rangle\langle k|) |n\rangle
 
     Parameters
     ----------
@@ -199,14 +202,22 @@ def get_process_tensor_from_process(process, dim):
     return np.array(rho_jks)
 
 def act_process_tensor(tensor, state):
-    '''Calculate the action of a process tensor on a state.
+    r'''Calculate the action of a process tensor on a state.
 
-    The process tensor for a process E in a vector basis {|n>} has the following
-    components:
-    T_jkmn = <m| E(|j><k|) |n>
-    For a state rho = rho_jk |j><k| the action of the process is calculated as
-    below:
-    E(rho) = T_kjmn rho_jk |m><n|
+    The process tensor for a process E in a vector basis :math:`\{|n\rangle\}`
+    has the following components:
+
+    .. math::
+
+       T_{jkmn} = \langle m| E(|j\rangle\langle k|) |n\rangle
+
+    For a state :math:`\rho = \rho_{jk} |j\rangle\langle k|` the action of the
+    process is calculated as below:
+
+    .. math::
+
+       E(\rho) = T_{kjmn} \rho_{jk} |m\rangle\langle n|
+
     so the new density matric elements are given by this particular contraction
     of T with the original density matrix elements.
 

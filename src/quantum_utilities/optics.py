@@ -144,6 +144,6 @@ def make_squeezed_state_vec(r, phi, N, normalized=True):
     '''
     ket = np.zeros(N, dtype=np.complex)
     for n in range(N//2):
-        ket[2*n] = (1 / np.sqrt(np.cosh(r))) * ((-0.5 * np.exp(2.j * mu) * np.tanh(r))**n /
+        ket[2*n] = (1 / np.sqrt(np.cosh(r))) * ((-0.5 * np.exp(2.j * phi) * np.tanh(r))**n /
                                                 factorial(n)) * np.sqrt(factorial(2 * n))
     return ket / np.linalg.norm(ket) if normalized else ket
